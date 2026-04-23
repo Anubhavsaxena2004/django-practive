@@ -3,7 +3,11 @@ from django.http import JsonResponse
 from .models import Task
 from datetime import date
 from . import serializers
-from rest_framework import viewsets
+from rest_framework import viewsets,status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+
 
 '''
 the below code is being done for the authentication purpose
@@ -146,7 +150,7 @@ __gte → greater than equal
 '''
 
 
-
+@api_view(['GET'])
 def events(request):
     # This is a simple example - you would typically fetch events from your database or an API
     # events = [
@@ -166,9 +170,14 @@ def events(request):
     events = Task.objects.all() # this is here to fetch all the tasks from the database and store it in the events variable
     taskserializer = serializers.TaskSerializer(events, many=True) # this is here to serialize the events variable which is a queryset of Task objects and convert it into a list of dictionaries that can be easily converted into JSON format
     print(taskserializer.data) # this is here to print the serialized data in the console for debugging purposes
-    return JsonResponse(taskserializer.data, safe=False) # this is here to return the serialized data as a JSON response to the client. The safe=False parameter is used to allow the response to be a list of dictionaries instead of a single dictionary.
+    return Response(taskserializer.data, status=status.HTTP_200_OK) # this is here to return the serialized data as a JSON response to the client. The safe=False parameter is used to allow the response to be a list of dictionaries instead of a single dictionary.
 
 def json_completed(request):
     tasks = Task.objects.filter(user=request.user, completed = True)
     taskserializer = serializers.TaskSerializer(tasks, many=True)
     return JsonResponse(taskserializer.data, safe=False)
+    '''this is for jsonresponse we have to set safe to false because we 
+    are returning a list of dictionaries instead of a single dictionary. 
+    By default, JsonResponse expects a single dictionary and will raise 
+    an error if you try to return a list. Setting safe=False allows us 
+    to return a list of dictionaries without any issues.'''
