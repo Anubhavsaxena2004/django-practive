@@ -150,7 +150,7 @@ __gte → greater than equal
 '''
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def events(request):
     # This is a simple example - you would typically fetch events from your database or an API
     # events = [
@@ -167,10 +167,21 @@ def events(request):
     # ]
 
     # In a real application, you would typically fetch events from your database or an API
-    events = Task.objects.all() # this is here to fetch all the tasks from the database and store it in the events variable
-    taskserializer = serializers.TaskSerializer(events, many=True) # this is here to serialize the events variable which is a queryset of Task objects and convert it into a list of dictionaries that can be easily converted into JSON format
-    print(taskserializer.data) # this is here to print the serialized data in the console for debugging purposes
-    return Response(taskserializer.data, status=status.HTTP_200_OK) # this is here to return the serialized data as a JSON response to the client. The safe=False parameter is used to allow the response to be a list of dictionaries instead of a single dictionary.
+    if request.method == 'GET':
+        events = Task.objects.all() # this is here to fetch all the tasks from the database and store it in the events variable
+        taskserializer = serializers.TaskSerializer(events, many=True) # this is here to serialize the events variable which is a queryset of Task objects and convert it into a list of dictionaries that can be easily converted into JSON format
+        print(taskserializer.data) # this is here to print the serialized data in the console for debugging purposes
+        return Response(taskserializer.data, status=status.HTTP_200_OK) # this is here to return the serialized data as a JSON response to the client. The safe=False parameter is used to allow the response to be a list of dictionaries instead of a single dictionary.
+
+    if request.method == 'POST':
+        # Here you would typically handle the creation of a new event based on the data sent in the request
+        title = request.data.get('title') # this is here to get the title of the event from the request data
+        due_date = request.data.get('due_date') # this is here to get the due
+        if not due_date: # this is here to check if the due date is empty
+            due_date = None # this is here to set the due date to None if it is empty
+        Task.objects.create(title=title, due_date=due_date, user = request.user) # this is here to create a new Task object in the database with the title and due date from the request data and the user from the request
+        return Response({"message": "Event created successfully"}, status=status.HTTP_201_CREATED)
+
 
 def json_completed(request):
     tasks = Task.objects.filter(user=request.user, completed = True)
