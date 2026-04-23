@@ -177,6 +177,7 @@ def events(request):
         # Here you would typically handle the creation of a new event based on the data sent in the request
         title = request.data.get('title') # this is here to get the title of the event from the request data
         due_date = request.data.get('due_date') # this is here to get the due
+        # here request.data is used to access the data sent in the request body. It is a dictionary-like object that allows you to retrieve values based on their keys. In this case, we are retrieving the values for 'title' and 'due_date' from the request data to create a new Task object in the database.
         if not due_date: # this is here to check if the due date is empty
             due_date = None # this is here to set the due date to None if it is empty
         Task.objects.create(title=title, due_date=due_date, user = request.user) # this is here to create a new Task object in the database with the title and due date from the request data and the user from the request
