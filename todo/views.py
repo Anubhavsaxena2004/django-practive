@@ -168,20 +168,31 @@ def events(request):
 
     # In a real application, you would typically fetch events from your database or an API
     if request.method == 'GET':
-        events = Task.objects.all() # this is here to fetch all the tasks from the database and store it in the events variable
+        events = Task.objects.filter( user = request.user) # this is here to fetch all the tasks from the database and store it in the events variable
         taskserializer = serializers.TaskSerializer(events, many=True) # this is here to serialize the events variable which is a queryset of Task objects and convert it into a list of dictionaries that can be easily converted into JSON format
         print(taskserializer.data) # this is here to print the serialized data in the console for debugging purposes
         return Response(taskserializer.data, status=status.HTTP_200_OK) # this is here to return the serialized data as a JSON response to the client. The safe=False parameter is used to allow the response to be a list of dictionaries instead of a single dictionary.
 
     if request.method == 'POST':
         # Here you would typically handle the creation of a new event based on the data sent in the request
-        title = request.data.get('title') # this is here to get the title of the event from the request data
-        due_date = request.data.get('due_date') # this is here to get the due
+        #title = request.data.get('title') # this is here to get the title of the event from the request data
+        #due_date = request.data.get('due_date') # this is here to get the due
         # here request.data is used to access the data sent in the request body. It is a dictionary-like object that allows you to retrieve values based on their keys. In this case, we are retrieving the values for 'title' and 'due_date' from the request data to create a new Task object in the database.
-        if not due_date: # this is here to check if the due date is empty
-            due_date = None # this is here to set the due date to None if it is empty
-        Task.objects.create(title=title, due_date=due_date, user = request.user) # this is here to create a new Task object in the database with the title and due date from the request data and the user from the request
-        return Response({"message": "Event created successfully"}, status=status.HTTP_201_CREATED)
+        # if not due_date: # this is here to check if the due date is empty
+        #     due_date = None # this is here to set the due date to None if it is empty
+        serializer= serializers.TaskSerializer(data=request.data)
+        '''the data which it expects is in the form 
+        {
+    "title": "New Task",
+    "due_date": "2024-07-01"
+        }'''
+        if serializer.is_valid():
+            serializer.save(user = request.user) # this is here to save the new Task object in the database with the user field set to the currently authenticated user. The save() method is called on the serializer instance, which will create a new Task object based on the validated data and save it to the database.
+            return Response({"message": "Event created successfully"}, status=status.HTTP_201_CREATED) # this is here to create a new instance of the TaskSerializer class and pass the request
+
+        print(serializer.errors) # this is here to print any validation errors that occurred during the serialization process in the console for debugging purposes
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) # this is here to return any validation errors that occurred during the serialization process as a JSON response to the client.
+
 
 
 def json_completed(request):
