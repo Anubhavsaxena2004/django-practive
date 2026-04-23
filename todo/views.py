@@ -147,16 +147,19 @@ __gte → greater than equal
 
 def events(request):
     # This is a simple example - you would typically fetch events from your database or an API
-    events = [
-        {"id": 1, "title": "Event 1", "date": "2024-07-01"},
-        {"id": 2, "title": "Event 2", "date": "2024-07-02"},
-        {"id": 3, "title": "Event 3", "date": "2024-07-03"},
-        {"id": 4, "title": "Event 4", "date": "2024-07-04"},
-        {"id": 5, "title": "Event 5", "date": "2024-07-05"},
-        {"id": 6, "title": "Event 6", "date": "2024-07-06"},
-        {"id": 7, "title": "Event 7", "date": "2024-07-07"},
-        {"id": 8, "title": "Event 8", "date": "2024-07-08"},
-        {"id": 9, "title": "Event 9", "date": "2024-07-09"},
-        {"id": 10, "title": "Event 10", "date": "2024-07-10"},
-    ]
+    # events = [
+    #     {"id": 1, "title": "Event 1", "date": "2024-07-01"},
+    #     {"id": 2, "title": "Event 2", "date": "2024-07-02"},
+    #     {"id": 3, "title": "Event 3", "date": "2024-07-03"},
+    #     {"id": 4, "title": "Event 4", "date": "2024-07-04"},
+    #     {"id": 5, "title": "Event 5", "date": "2024-07-05"},
+    #     {"id": 6, "title": "Event 6", "date": "2024-07-06"},
+    #     {"id": 7, "title": "Event 7", "date": "2024-07-07"},
+    #     {"id": 8, "title": "Event 8", "date": "2024-07-08"},
+    #     {"id": 9, "title": "Event 9", "date": "2024-07-09"},
+    #     {"id": 10, "title": "Event 10", "date": "2024-07-10"},
+    # ]
+
+    events = Task.objects.all()
+    print(events)
     return JsonResponse(events, safe=False)
