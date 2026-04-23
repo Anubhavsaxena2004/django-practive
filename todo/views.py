@@ -167,3 +167,8 @@ def events(request):
     taskserializer = serializers.TaskSerializer(events, many=True) # this is here to serialize the events variable which is a queryset of Task objects and convert it into a list of dictionaries that can be easily converted into JSON format
     print(taskserializer.data) # this is here to print the serialized data in the console for debugging purposes
     return JsonResponse(taskserializer.data, safe=False) # this is here to return the serialized data as a JSON response to the client. The safe=False parameter is used to allow the response to be a list of dictionaries instead of a single dictionary.
+
+def json_completed(request):
+    tasks = Task.objects.filter(user=request.user, completed = True)
+    taskserializer = serializers.TaskSerializer(tasks, many=True)
+    return JsonResponse(taskserializer.data, safe=False)

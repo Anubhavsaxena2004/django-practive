@@ -15,4 +15,5 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
     path('register/', views.register_user, name='register'),
     path('v1/events/', views.events, name='events'),
+    path('v1/completed/', views.json_completed, name='json_completed'),
 ]
