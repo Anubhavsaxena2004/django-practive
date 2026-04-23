@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from django.http import JsonResponse
 from .models import Task
 from datetime import date
+from . import serializers
+from rest_framework import viewsets
 
 '''
 the below code is being done for the authentication purpose
@@ -160,6 +162,8 @@ def events(request):
     #     {"id": 10, "title": "Event 10", "date": "2024-07-10"},
     # ]
 
-    events = Task.objects.all()
-    print(events)
-    return JsonResponse(events, safe=False)
+    # In a real application, you would typically fetch events from your database or an API
+    events = Task.objects.all() # this is here to fetch all the tasks from the database and store it in the events variable
+    taskserializer = serializers.TaskSerializer(events, many=True) # this is here to serialize the events variable which is a queryset of Task objects and convert it into a list of dictionaries that can be easily converted into JSON format
+    print(taskserializer.data) # this is here to print the serialized data in the console for debugging purposes
+    return JsonResponse(taskserializer.data, safe=False) # this is here to return the serialized data as a JSON response to the client. The safe=False parameter is used to allow the response to be a list of dictionaries instead of a single dictionary.

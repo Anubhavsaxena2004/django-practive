@@ -1,6 +1,14 @@
 from . import models
-from rest_framework import serializers
-class TaskSerializer(serializers.ModelSerializer):
+from rest_framework import serializers #this is here to import the serializers module from the rest framework which is used to create serializers for our models
+
+'''
+this whole code is here to undersand the basic of srializers 
+and how to use them as they work as to convert json to model and 
+then model to josn upon various 
+http variation as for get and post operations
+'''
+
+class TaskSerializer(serializers.ModelSerializer): #this is here to create a serializer for the Task model
     class Meta:
-        model = models.Task
-        fields = all
+        model = models.Task #this is here to specify the model that we want to serialize and deserialize
+        fields = ['id', 'title', 'due_date'] #this is here to specify the fields that we want to serialize and deserialize
